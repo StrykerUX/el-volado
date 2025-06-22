@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -7,7 +7,6 @@ import {
   SafeAreaView,
   StatusBar,
   Dimensions,
-  ScrollView,
 } from 'react-native';
 import hapticFeedback from '../utils/HapticFeedback';
 import { 
@@ -55,7 +54,6 @@ const ONBOARDING_STEPS = [
 
 const OnboardingScreen = ({ onComplete, onSkip }) => {
   const [currentStep, setCurrentStep] = useState(0);
-  const scrollViewRef = useRef(null);
 
   React.useEffect(() => {
     // OnboardingScreen initialized
@@ -67,12 +65,6 @@ const OnboardingScreen = ({ onComplete, onSkip }) => {
     if (currentStep < ONBOARDING_STEPS.length - 1) {
       const nextStep = currentStep + 1;
       setCurrentStep(nextStep);
-      
-      // Scroll to next step
-      scrollViewRef.current?.scrollTo({
-        x: nextStep * width,
-        animated: true,
-      });
     } else {
       handleComplete();
     }
@@ -84,12 +76,6 @@ const OnboardingScreen = ({ onComplete, onSkip }) => {
     if (currentStep > 0) {
       const prevStep = currentStep - 1;
       setCurrentStep(prevStep);
-      
-      // Scroll to previous step
-      scrollViewRef.current?.scrollTo({
-        x: prevStep * width,
-        animated: true,
-      });
     }
   };
 
@@ -213,17 +199,9 @@ const OnboardingScreen = ({ onComplete, onSkip }) => {
       </View>
 
       {/* Steps Content */}
-      <ScrollView
-        ref={scrollViewRef}
-        horizontal
-        pagingEnabled
-        showsHorizontalScrollIndicator={false}
-        scrollEnabled={false}
-        style={styles.stepsContainer}
-        contentContainerStyle={styles.stepsContent}
-      >
-        {ONBOARDING_STEPS.map((step, index) => renderStep(step, index))}
-      </ScrollView>
+      <View style={styles.stepsContainer}>
+        {renderStep(ONBOARDING_STEPS[currentStep], currentStep)}
+      </View>
 
       {/* Navigation */}
       <View style={styles.navigationContainer}>
@@ -314,14 +292,12 @@ const styles = StyleSheet.create({
   },
   stepsContainer: {
     flex: 1,
-  },
-  stepsContent: {
-    width: width * ONBOARDING_STEPS.length,
+    justifyContent: 'center',
   },
   stepContainer: {
-    width: width,
     paddingHorizontal: SPACING.lg,
     justifyContent: 'center',
+    alignItems: 'center',
   },
   stepContent: {
     alignItems: 'center',
