@@ -1,6 +1,6 @@
 import React from 'react';
-import GameScreen from './src/screens/GameScreen';
+import AppNavigator from './src/navigation/AppNavigator';
 
 export default function App() {
-  return <GameScreen />;
+  return <AppNavigator />;
 }

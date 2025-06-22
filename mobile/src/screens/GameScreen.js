@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   View,
   StyleSheet,
@@ -17,24 +17,41 @@ import AchievementsPanel from '../components/AchievementsPanel';
 import PrestigePanel from '../components/PrestigePanel';
 import OfflineEarningsModal from '../components/OfflineEarningsModal';
 import SettingsPanel from '../components/SettingsPanel';
+import TutorialOverlay from '../components/TutorialOverlay';
+import HelpButton from '../components/HelpButton';
+import TooltipSystem from '../components/TooltipSystem';
 import { useFloatingNumbers } from '../components/FloatingNumbers';
 import { useParticles } from '../components/ParticleSystem';
 import FeedbackSystem from '../utils/FeedbackSystem';
 import { COLORS, SHADOWS, BORDER_RADIUS, BORDERS, SPACING, TYPOGRAPHY } from '../constants/NeoBrutalTheme';
 
-const GameScreen = () => {
+const GameScreen = ({ onLogout }) => {
   const { 
     loadGame, 
     saveGame, 
     resetGame,
     setFloatingNumberHandler,
-    setParticleHandler
+    setParticleHandler,
+    initializeOnboardingState,
+    hasCompletedTutorial,
+    showTutorial,
+    startTutorial,
+    completeTutorial,
+    restartTutorial
   } = useGameStore();
   const [showShop, setShowShop] = useState(false);
   const [showAchievements, setShowAchievements] = useState(false);
   const [showPrestige, setShowPrestige] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [offlineEarnings, setOfflineEarnings] = useState(null);
+  
+  // Refs for tutorial targeting
+  const coinFlipRef = useRef(null);
+  const statsPanelRef = useRef(null);
+  const shopButtonRef = useRef(null);
+  const achievementsButtonRef = useRef(null);
+  const prestigeButtonRef = useRef(null);
+  const settingsButtonRef = useRef(null);
 
   // Visual effects hooks
   const { showFloatingNumber, FloatingNumbersRenderer } = useFloatingNumbers();
@@ -50,11 +67,22 @@ const GameScreen = () => {
   global.resetGame = resetGame;
   
   useEffect(() => {
-    // Load game on app start and check for offline earnings
+    // Initialize game and tutorial state
     const initializeGame = async () => {
+      // Load game data first
       const offlineData = await loadGame();
       if (offlineData) {
         setOfflineEarnings(offlineData);
+      }
+      
+      // Initialize onboarding state
+      await initializeOnboardingState();
+      
+      // Start tutorial if not completed
+      if (!hasCompletedTutorial) {
+        setTimeout(() => {
+          startTutorial();
+        }, 1500); // Delay to allow UI to settle
       }
     };
     
@@ -86,6 +114,11 @@ const GameScreen = () => {
     
     return () => clearInterval(saveInterval);
   }, []);
+
+  // Handle tutorial restart from help button
+  const handleTutorialRestart = () => {
+    restartTutorial();
+  };
   
   return (
     <SafeAreaView style={styles.container}>
@@ -96,6 +129,7 @@ const GameScreen = () => {
         <View style={styles.header}>
           <View style={styles.headerTop}>
             <TouchableOpacity
+              ref={settingsButtonRef}
               style={styles.settingsButton}
               onPress={() => setShowSettings(true)}
             >
@@ -106,15 +140,20 @@ const GameScreen = () => {
         </View>
         
         <View style={styles.gameArea}>
-          <CoinFlip />
+          <View ref={coinFlipRef}>
+            <CoinFlip />
+          </View>
         </View>
         
         <View style={styles.bottomArea}>
-          <FlipStats />
+          <View ref={statsPanelRef}>
+            <FlipStats />
+          </View>
           
           {/* Buttons Row */}
           <View style={styles.buttonsRow}>
             <TouchableOpacity
+              ref={shopButtonRef}
               style={[styles.actionButton, { backgroundColor: COLORS.secondary }]}
               onPress={() => setShowShop(true)}
             >
@@ -122,6 +161,7 @@ const GameScreen = () => {
             </TouchableOpacity>
             
             <TouchableOpacity
+              ref={achievementsButtonRef}
               style={[styles.actionButton, { backgroundColor: COLORS.warning }]}
               onPress={() => setShowAchievements(true)}
             >
@@ -132,6 +172,7 @@ const GameScreen = () => {
           {/* Prestige Button Row */}
           <View style={styles.prestigeRow}>
             <TouchableOpacity
+              ref={prestigeButtonRef}
               style={[styles.prestigeButton, { backgroundColor: COLORS.accent }]}
               onPress={() => setShowPrestige(true)}
             >
@@ -169,8 +210,30 @@ const GameScreen = () => {
       
       <SettingsPanel 
         visible={showSettings} 
-        onClose={() => setShowSettings(false)} 
+        onClose={() => setShowSettings(false)}
+        onLogout={onLogout} 
       />
+      
+      {/* Tutorial and Help System */}
+      <TutorialOverlay
+        isVisible={showTutorial}
+        onComplete={completeTutorial}
+        elementRefs={{
+          coinFlip: coinFlipRef,
+          statsPanel: statsPanelRef,
+          shopButton: shopButtonRef,
+          achievementsButton: achievementsButtonRef,
+          prestigeButton: prestigeButtonRef,
+          settingsButton: settingsButtonRef,
+        }}
+      />
+      
+      <HelpButton
+        position="bottom-right"
+        onTutorialRestart={handleTutorialRestart}
+      />
+      
+      <TooltipSystem />
     </SafeAreaView>
   );
 };

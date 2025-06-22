@@ -18,6 +18,12 @@ export const COLORS = {
   error: '#FF8A65',        // Soft red
   info: '#81C784',         // Soft blue-green
   
+  // Additional colors for themes
+  primaryDark: '#E6569A',
+  secondaryDark: '#46B8B1',
+  successDark: '#5EBF71',
+  border: '#E0E0E0',
+  
   // Text colors
   text: '#2C2C54',         // Dark navy for text
   textSecondary: '#6C7B7F', // Muted gray
@@ -58,6 +64,31 @@ export const SHADOWS = {
     // Web compatibility
     boxShadow: '8px 8px 0px #2C2C54',
   },
+  // Alternative names for consistency
+  small: {
+    shadowColor: COLORS.dark,
+    shadowOffset: { width: 2, height: 2 },
+    shadowOpacity: 1,
+    shadowRadius: 0,
+    elevation: 2,
+    boxShadow: '2px 2px 0px #2C2C54',
+  },
+  medium: {
+    shadowColor: COLORS.dark,
+    shadowOffset: { width: 4, height: 4 },
+    shadowOpacity: 1,
+    shadowRadius: 0,
+    elevation: 6,
+    boxShadow: '4px 4px 0px #2C2C54',
+  },
+  large: {
+    shadowColor: COLORS.dark,
+    shadowOffset: { width: 8, height: 8 },
+    shadowOpacity: 1,
+    shadowRadius: 0,
+    elevation: 10,
+    boxShadow: '8px 8px 0px #2C2C54',
+  },
 };
 
 export const SPACING = {
@@ -78,9 +109,11 @@ export const BORDER_RADIUS = {
 };
 
 export const BORDERS = {
-  thick: 4,
-  thicker: 6,
-  thickest: 8,
+  thin: { borderWidth: 2 },
+  medium: { borderWidth: 3 },
+  thick: { borderWidth: 4 },
+  thicker: { borderWidth: 6 },
+  thickest: { borderWidth: 8 },
 };
 
 export const TYPOGRAPHY = {

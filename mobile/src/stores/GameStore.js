@@ -90,6 +90,17 @@ const useGameStore = create((set, get) => ({
   isOnline: true,
   syncInProgress: false,
   pendingActions: 0,
+
+  // Authentication State
+  isAuthenticated: false,
+  user: null,
+  authToken: null,
+
+  // Tutorial & Onboarding State
+  hasCompletedOnboarding: false,
+  hasCompletedTutorial: false,
+  tutorialStep: 0,
+  showTutorial: false,
   
   // Actions
   tap: () => {
@@ -1305,6 +1316,89 @@ const useGameStore = create((set, get) => ({
       pendingActions: state.pendingActions,
       queueStats: offlineQueue.getQueueStats(),
     };
+  },
+
+  // Tutorial & Onboarding Management
+  initializeOnboardingState: async () => {
+    try {
+      const onboardingComplete = await AsyncStorage.getItem('onboardingComplete');
+      const tutorialComplete = await AsyncStorage.getItem('tutorialCompleted');
+      
+      set({
+        hasCompletedOnboarding: onboardingComplete === 'true',
+        hasCompletedTutorial: tutorialComplete === 'true',
+      });
+    } catch (error) {
+      console.error('Error loading onboarding state:', error);
+    }
+  },
+
+  startTutorial: () => {
+    set({ 
+      showTutorial: true, 
+      tutorialStep: 0 
+    });
+  },
+
+  nextTutorialStep: () => {
+    const state = get();
+    set({ tutorialStep: state.tutorialStep + 1 });
+  },
+
+  completeTutorial: async () => {
+    try {
+      await AsyncStorage.setItem('tutorialCompleted', 'true');
+      set({ 
+        showTutorial: false, 
+        hasCompletedTutorial: true,
+        tutorialStep: 0 
+      });
+    } catch (error) {
+      console.error('Error completing tutorial:', error);
+    }
+  },
+
+  restartTutorial: async () => {
+    try {
+      await AsyncStorage.removeItem('tutorialCompleted');
+      set({ 
+        hasCompletedTutorial: false,
+        showTutorial: true,
+        tutorialStep: 0 
+      });
+    } catch (error) {
+      console.error('Error restarting tutorial:', error);
+    }
+  },
+
+  completeOnboarding: async () => {
+    try {
+      await AsyncStorage.setItem('onboardingComplete', 'true');
+      set({ hasCompletedOnboarding: true });
+    } catch (error) {
+      console.error('Error completing onboarding:', error);
+    }
+  },
+
+  // Authentication State Management
+  setAuthenticationState: (isAuthenticated, user = null, token = null) => {
+    set({
+      isAuthenticated,
+      user,
+      authToken: token,
+    });
+  },
+
+  clearAuthenticationState: () => {
+    set({
+      isAuthenticated: false,
+      user: null,
+      authToken: null,
+      syncEnabled: false,
+      lastSyncTime: null,
+      nextSyncIn: 0,
+      pendingActions: 0,
+    });
   },
 }));
 
