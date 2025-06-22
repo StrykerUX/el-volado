@@ -9,7 +9,6 @@ import {
   StatusBar,
   Alert,
   ActivityIndicator,
-  Animated,
 } from 'react-native';
 import useGameStore from '../stores/GameStore';
 import hapticFeedback from '../utils/HapticFeedback';
@@ -33,17 +32,7 @@ const AuthScreen = ({ onAuthSuccess }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
   
-  const slideAnim = new Animated.Value(0);
   const { loginUser, registerUser } = useGameStore();
-
-  React.useEffect(() => {
-    // Slide in animation
-    Animated.timing(slideAnim, {
-      toValue: 1,
-      duration: 500,
-      useNativeDriver: true,
-    }).start();
-  }, []);
 
   const validateForm = () => {
     const newErrors = {};
@@ -132,20 +121,7 @@ const AuthScreen = ({ onAuthSuccess }) => {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor={COLORS.background} />
       
-      <Animated.View 
-        style={[
-          styles.content,
-          {
-            opacity: slideAnim,
-            transform: [{
-              translateY: slideAnim.interpolate({
-                inputRange: [0, 1],
-                outputRange: [50, 0],
-              }),
-            }],
-          }
-        ]}
-      >
+      <View style={styles.content}>
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.logo}>🎮 VOLADO</Text>
@@ -265,7 +241,7 @@ const AuthScreen = ({ onAuthSuccess }) => {
             By continuing, you agree to our fair play policy
           </Text>
         </View>
-      </Animated.View>
+      </View>
     </SafeAreaView>
   );
 };
