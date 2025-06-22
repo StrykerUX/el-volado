@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import useGameStore from '../stores/GameStore';
 import { formatNumber } from '../utils/NumberFormatter';
+import { useLanguage } from '../contexts/LanguageContext';
 import { COLORS, SHADOWS, BORDER_RADIUS, BORDERS, SPACING, TYPOGRAPHY } from '../constants/NeoBrutalTheme';
 import hapticFeedback from '../utils/HapticFeedback';
 
@@ -15,12 +16,13 @@ const FlipStats = () => {
     setBetAmount,
     isFlipping
   } = useGameStore();
+  const { t } = useLanguage();
   
   const betPercentages = [
-    { label: '10%', value: 0.1, color: COLORS.success },
-    { label: '25%', value: 0.25, color: COLORS.warning },
-    { label: '50%', value: 0.5, color: COLORS.error },
-    { label: 'ALL IN', value: 1, color: COLORS.primary },
+    { label: t('game.tenPercent'), value: 0.1, color: COLORS.success },
+    { label: t('game.twentyFivePercent'), value: 0.25, color: COLORS.warning },
+    { label: t('game.fiftyPercent'), value: 0.5, color: COLORS.error },
+    { label: t('game.allIn'), value: 1, color: COLORS.primary },
   ];
   
   const handleBetSelection = (percentage) => {
@@ -37,20 +39,20 @@ const FlipStats = () => {
       <View style={styles.statsRow}>
         <View style={styles.statCard}>
           <Text style={styles.statValue}>{formatNumber(totalFlips)}</Text>
-          <Text style={styles.statLabel}>FLIPS</Text>
+          <Text style={styles.statLabel}>LANZAMIENTOS</Text>
         </View>
         
         <View style={styles.statCard}>
           <Text style={[styles.statValue, { color: COLORS.primary }]}>
             {headsStreak}
           </Text>
-          <Text style={styles.statLabel}>STREAK</Text>
+          <Text style={styles.statLabel}>RACHA</Text>
         </View>
       </View>
       
       {/* Betting Buttons */}
       <View style={styles.bettingSection}>
-        <Text style={styles.bettingTitle}>🎰 APOSTAR</Text>
+        <Text style={styles.bettingTitle}>🎰 {t('game.bet').toUpperCase()}</Text>
         <View style={styles.betButtons}>
           {betPercentages.map((percentage, index) => {
             const betAmount = Math.floor(coins * percentage.value);
@@ -96,7 +98,7 @@ const FlipStats = () => {
       {headsStreak >= 3 && (
         <View style={styles.streakBonus}>
           <Text style={styles.streakText}>
-            🔥 BONUS: {1 + (headsStreak * 0.1)}x
+            🔥 BONO: {1 + (headsStreak * 0.1)}x
           </Text>
         </View>
       )}

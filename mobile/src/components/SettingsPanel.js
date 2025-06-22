@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Switch, Alert } from 'react-native';
 import Slider from '@react-native-community/slider';
 import useGameStore from '../stores/GameStore';
+import { useLanguage } from '../contexts/LanguageContext';
 import { COLORS, SHADOWS, BORDER_RADIUS, BORDERS, SPACING, TYPOGRAPHY } from '../constants/NeoBrutalTheme';
 
 const SettingsPanel = ({ visible, onClose }) => {
@@ -18,20 +19,16 @@ const SettingsPanel = ({ visible, onClose }) => {
     setScreenReaderMode,
     resetGame 
   } = useGameStore();
+  const { t, language, changeLanguage } = useLanguage();
 
   if (!visible) return null;
 
   const handleResetGame = () => {
     Alert.alert(
-      '⚠️ RESETEAR JUEGO',
-      'Esto eliminará PERMANENTEMENTE todo tu progreso:\n\n' +
-      '• Todas las monedas y mejoras\n' +
-      '• Logros desbloqueados\n' +
-      '• Progreso de Prestige\n' +
-      '• Estadísticas\n\n' +
-      '¿Estás SEGURO de que quieres continuar?',
+      t('settings.resetGame'),
+      t('settings.resetConfirm'),
       [
-        { text: 'Cancelar', style: 'cancel' },
+        { text: t('common.cancel'), style: 'cancel' },
         { 
           text: 'SÍ, RESETEAR TODO', 
           style: 'destructive',
@@ -63,7 +60,7 @@ const SettingsPanel = ({ visible, onClose }) => {
       <View style={styles.container}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.title}>⚙️ CONFIGURACIÓN</Text>
+          <Text style={styles.title}>⚙️ {t('settings.title').toUpperCase()}</Text>
           <TouchableOpacity style={styles.closeButton} onPress={onClose}>
             <Text style={styles.closeButtonText}>✕</Text>
           </TouchableOpacity>
@@ -72,13 +69,57 @@ const SettingsPanel = ({ visible, onClose }) => {
         {/* Content */}
         <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
           
-          {/* Audio Settings */}
+          {/* Language Settings */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>🔊 AUDIO</Text>
+            <Text style={styles.sectionTitle}>🌐 {t('settings.language').toUpperCase()}</Text>
             
             <View style={styles.settingItem}>
               <View style={styles.settingInfo}>
-                <Text style={styles.settingName}>Sonidos Activados</Text>
+                <Text style={styles.settingLabel}>Idioma / Language</Text>
+                <Text style={styles.settingDescription}>
+                  Cambiar idioma de la interfaz
+                </Text>
+              </View>
+              <View style={styles.languageButtons}>
+                <TouchableOpacity
+                  style={[
+                    styles.languageButton,
+                    language === 'es' && styles.languageButtonActive
+                  ]}
+                  onPress={() => changeLanguage('es')}
+                >
+                  <Text style={[
+                    styles.languageButtonText,
+                    language === 'es' && styles.languageButtonTextActive
+                  ]}>
+                    ES
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[
+                    styles.languageButton,
+                    language === 'en' && styles.languageButtonActive
+                  ]}
+                  onPress={() => changeLanguage('en')}
+                >
+                  <Text style={[
+                    styles.languageButtonText,
+                    language === 'en' && styles.languageButtonTextActive
+                  ]}>
+                    EN
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+          
+          {/* Audio Settings */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>🔊 {t('settings.audio').toUpperCase()}</Text>
+            
+            <View style={styles.settingItem}>
+              <View style={styles.settingInfo}>
+                <Text style={styles.settingName}>Sonidos</Text>
                 <Text style={styles.settingDescription}>
                   Activa o desactiva todos los efectos de sonido
                 </Text>
@@ -95,7 +136,7 @@ const SettingsPanel = ({ visible, onClose }) => {
             {soundEnabled && (
               <View style={styles.settingItem}>
                 <View style={styles.settingInfo}>
-                  <Text style={styles.settingName}>Volumen</Text>
+                  <Text style={styles.settingName}>{t('settings.volume')}</Text>
                   <Text style={styles.settingDescription}>
                     Ajusta el volumen de los efectos de sonido
                   </Text>
@@ -123,11 +164,11 @@ const SettingsPanel = ({ visible, onClose }) => {
 
           {/* Accessibility Settings */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>♿ ACCESIBILIDAD</Text>
+            <Text style={styles.sectionTitle}>♿ {t('settings.accessibility').toUpperCase()}</Text>
             
             <View style={styles.settingItem}>
               <View style={styles.settingInfo}>
-                <Text style={styles.settingName}>Modo Alto Contraste</Text>
+                <Text style={styles.settingName}>{t('settings.highContrast')}</Text>
                 <Text style={styles.settingDescription}>
                   Aumenta el contraste de colores para mejor visibilidad
                 </Text>
@@ -143,7 +184,7 @@ const SettingsPanel = ({ visible, onClose }) => {
 
             <View style={styles.settingItem}>
               <View style={styles.settingInfo}>
-                <Text style={styles.settingName}>Movimiento Reducido</Text>
+                <Text style={styles.settingName}>{t('settings.reducedMotion')}</Text>
                 <Text style={styles.settingDescription}>
                   Reduce las animaciones para evitar mareos
                 </Text>
@@ -399,6 +440,34 @@ const styles = StyleSheet.create({
     fontWeight: TYPOGRAPHY.weights.black,
     color: COLORS.textLight,
     letterSpacing: 1,
+  },
+  languageButtons: {
+    flexDirection: 'row',
+    gap: SPACING.sm,
+    marginTop: SPACING.sm,
+  },
+  languageButton: {
+    backgroundColor: COLORS.background,
+    borderRadius: BORDER_RADIUS.sm,
+    paddingHorizontal: SPACING.md,
+    paddingVertical: SPACING.sm,
+    borderWidth: BORDERS.medium,
+    borderColor: COLORS.border,
+    minWidth: 50,
+    alignItems: 'center',
+  },
+  languageButtonActive: {
+    backgroundColor: COLORS.primary,
+    borderColor: COLORS.primaryDark,
+    ...SHADOWS.small,
+  },
+  languageButtonText: {
+    fontSize: TYPOGRAPHY.sizes.sm,
+    fontWeight: TYPOGRAPHY.weights.bold,
+    color: COLORS.text,
+  },
+  languageButtonTextActive: {
+    color: COLORS.textLight,
   },
 });
 

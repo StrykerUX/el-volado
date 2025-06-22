@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import hapticFeedback from '../utils/HapticFeedback';
+import { useLanguage } from '../contexts/LanguageContext';
 import { 
   COLORS, 
   SHADOWS, 
@@ -20,81 +21,12 @@ import {
   FONTS 
 } from '../constants/NeoBrutalTheme';
 
-const HELP_CONTENT = {
-  general: {
-    title: 'How to Play Volado',
-    sections: [
-      {
-        title: '🪙 Basic Gameplay',
-        content: 'Tap the coin to flip it! Getting heads gives you double coins, while tails gives you the base amount. Build streaks of consecutive heads for massive bonuses!'
-      },
-      {
-        title: '💰 Betting System',
-        content: 'Use the betting buttons to wager a percentage of your coins. Winning bets give you 1.8x your wager back. Risk more to earn more!'
-      },
-      {
-        title: '⚡ Upgrades',
-        content: 'Buy upgrades in the shop to increase your coins per tap, streak bonuses, flip speed, and more. Each upgrade makes you more powerful!'
-      },
-      {
-        title: '🏭 Generators',
-        content: 'Purchase generators for passive income. They earn coins automatically even when you\'re not actively playing.'
-      },
-      {
-        title: '🏆 Achievements',
-        content: 'Complete achievements to earn permanent multipliers. These bonuses apply to all your coin earnings!'
-      },
-      {
-        title: '🌟 Prestige',
-        content: 'When you\'ve earned enough coins, you can prestige to reset your progress for massive permanent multipliers.'
-      }
-    ]
-  },
-  tips: {
-    title: 'Pro Tips',
-    sections: [
-      {
-        title: '🎯 Strategy Tips',
-        content: '• Focus on tap multiplier upgrades first\n• Build your streak carefully before big bets\n• Generators provide steady passive income\n• Complete achievements for permanent bonuses'
-      },
-      {
-        title: '🎮 Gameplay Tips',
-        content: '• The game is completely fair - 50/50 odds always\n• No pay-to-win mechanics, skill and strategy matter\n• Play offline and sync when you reconnect\n• Long press elements for detailed tooltips'
-      },
-      {
-        title: '⚡ Efficiency Tips',
-        content: '• Upgrade flip speed to flip coins faster\n• Use multi-bet for consecutive betting\n• Prestige when progress slows down\n• Check achievements regularly for goals'
-      }
-    ]
-  },
-  features: {
-    title: 'Game Features',
-    sections: [
-      {
-        title: '✨ Fair Play',
-        content: 'Volado guarantees 50/50 coin flip odds with no hidden mechanics. Our anti-cheat system protects dedicated players while ensuring fair competition.'
-      },
-      {
-        title: '📱 Mobile Optimized',
-        content: 'Designed specifically for mobile with haptic feedback, optimized touch targets, and smooth 60fps animations.'
-      },
-      {
-        title: '🔄 Cloud Sync',
-        content: 'Your progress automatically syncs to the cloud every 30 minutes. Play offline and your progress will sync when you reconnect.'
-      },
-      {
-        title: '🎨 Accessibility',
-        content: 'High contrast mode, reduced motion options, and screen reader support make the game accessible to everyone.'
-      }
-    ]
-  }
-};
-
 const HelpButton = ({ position = 'bottom-right', onTutorialRestart }) => {
   const [isHelpVisible, setIsHelpVisible] = useState(false);
   const [activeTab, setActiveTab] = useState('general');
   const pulseAnim = useRef(new Animated.Value(1)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
+  const { t } = useLanguage();
 
   React.useEffect(() => {
     // Start subtle pulse animation
@@ -240,7 +172,7 @@ const HelpButton = ({ position = 'bottom-right', onTutorialRestart }) => {
             <SafeAreaView style={styles.modalContainer}>
               {/* Header */}
               <View style={styles.header}>
-                <Text style={styles.headerTitle}>Help & Tips</Text>
+                <Text style={styles.headerTitle}>{t('tutorial.help')}</Text>
                 <TouchableOpacity onPress={handleClose} style={styles.closeButton}>
                   <Text style={styles.closeButtonText}>✕</Text>
                 </TouchableOpacity>
@@ -248,19 +180,78 @@ const HelpButton = ({ position = 'bottom-right', onTutorialRestart }) => {
 
               {/* Tabs */}
               <View style={styles.tabContainer}>
-                {renderTab('general', 'Guide', '📖')}
-                {renderTab('tips', 'Tips', '💡')}
-                {renderTab('features', 'Features', '⚡')}
+                {renderTab('general', 'Guía', '📖')}
+                {renderTab('tips', 'Consejos', '💡')}
+                {renderTab('features', 'Características', '⚡')}
               </View>
 
               {/* Content */}
               <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
                 <Text style={styles.contentTitle}>
-                  {HELP_CONTENT[activeTab].title}
+                  {activeTab === 'general' ? t('help.title') : 
+                   activeTab === 'tips' ? t('help.tips.title') : 
+                   'Características del Juego'}
                 </Text>
                 
-                {HELP_CONTENT[activeTab].sections.map((section, index) => 
-                  renderSection(section, index)
+                {activeTab === 'general' && (
+                  <>
+                    <View style={styles.section}>
+                      <Text style={styles.sectionTitle}>{t('help.sections.basicGameplay.title')}</Text>
+                      <Text style={styles.sectionContent}>{t('help.sections.basicGameplay.content')}</Text>
+                    </View>
+                    <View style={styles.section}>
+                      <Text style={styles.sectionTitle}>{t('help.sections.bettingSystem.title')}</Text>
+                      <Text style={styles.sectionContent}>{t('help.sections.bettingSystem.content')}</Text>
+                    </View>
+                    <View style={styles.section}>
+                      <Text style={styles.sectionTitle}>{t('help.sections.upgrades.title')}</Text>
+                      <Text style={styles.sectionContent}>{t('help.sections.upgrades.content')}</Text>
+                    </View>
+                    <View style={styles.section}>
+                      <Text style={styles.sectionTitle}>{t('help.sections.generators.title')}</Text>
+                      <Text style={styles.sectionContent}>{t('help.sections.generators.content')}</Text>
+                    </View>
+                    <View style={styles.section}>
+                      <Text style={styles.sectionTitle}>{t('help.sections.achievements.title')}</Text>
+                      <Text style={styles.sectionContent}>{t('help.sections.achievements.content')}</Text>
+                    </View>
+                    <View style={styles.section}>
+                      <Text style={styles.sectionTitle}>{t('help.sections.prestige.title')}</Text>
+                      <Text style={styles.sectionContent}>{t('help.sections.prestige.content')}</Text>
+                    </View>
+                  </>
+                )}
+
+                {activeTab === 'tips' && (
+                  <>
+                    <View style={styles.section}>
+                      <Text style={styles.sectionTitle}>{t('help.tips.title')}</Text>
+                      {t('help.tips.items').map((tip, index) => (
+                        <Text key={index} style={styles.tipItem}>• {tip}</Text>
+                      ))}
+                    </View>
+                  </>
+                )}
+
+                {activeTab === 'features' && (
+                  <>
+                    <View style={styles.section}>
+                      <Text style={styles.sectionTitle}>{t('help.fairPlay.title')}</Text>
+                      <Text style={styles.sectionContent}>{t('help.fairPlay.content')}</Text>
+                    </View>
+                    <View style={styles.section}>
+                      <Text style={styles.sectionTitle}>📱 Optimizado para Móvil</Text>
+                      <Text style={styles.sectionContent}>Diseñado específicamente para móvil con vibración háptica, objetivos táctiles optimizados y animaciones suaves a 60fps.</Text>
+                    </View>
+                    <View style={styles.section}>
+                      <Text style={styles.sectionTitle}>🔄 Sincronización en la Nube</Text>
+                      <Text style={styles.sectionContent}>Tu progreso se sincroniza automáticamente en la nube cada 30 minutos. Juega offline y tu progreso se sincronizará cuando te reconectes.</Text>
+                    </View>
+                    <View style={styles.section}>
+                      <Text style={styles.sectionTitle}>🎨 Accesibilidad</Text>
+                      <Text style={styles.sectionContent}>Modo de alto contraste, opciones de movimiento reducido y soporte para lector de pantalla hacen el juego accesible para todos.</Text>
+                    </View>
+                  </>
                 )}
 
                 {/* Tutorial restart button */}
@@ -270,7 +261,7 @@ const HelpButton = ({ position = 'bottom-right', onTutorialRestart }) => {
                     onPress={handleRestartTutorial}
                   >
                     <Text style={styles.tutorialButtonText}>
-                      🎯 Restart Tutorial
+                      🎯 {t('tutorial.restart')}
                     </Text>
                   </TouchableOpacity>
                 )}
@@ -279,7 +270,7 @@ const HelpButton = ({ position = 'bottom-right', onTutorialRestart }) => {
               {/* Footer */}
               <View style={styles.footer}>
                 <Text style={styles.footerText}>
-                  💡 Long press any element for detailed tooltips
+                  💡 Mantén presionado cualquier elemento para tooltips detallados
                 </Text>
               </View>
             </SafeAreaView>
@@ -426,6 +417,13 @@ const styles = StyleSheet.create({
     fontFamily: FONTS.regular,
     color: COLORS.text,
     lineHeight: 20,
+  },
+  tipItem: {
+    fontSize: 14,
+    fontFamily: FONTS.regular,
+    color: COLORS.text,
+    lineHeight: 20,
+    marginBottom: SPACING.xs,
   },
   tutorialButton: {
     backgroundColor: COLORS.secondary,

@@ -9,6 +9,7 @@ import {
   Modal,
 } from 'react-native';
 import hapticFeedback from '../utils/HapticFeedback';
+import { useLanguage } from '../contexts/LanguageContext';
 import { 
   COLORS, 
   SHADOWS, 
@@ -20,47 +21,15 @@ import {
 
 const { width, height } = Dimensions.get('window');
 
-const TOOLTIP_CONTENT = {
-  coinFlip: {
-    title: 'Coin Flip',
-    description: 'Tap to flip the coin! Get heads for double coins and build streaks for massive bonuses.',
-    tips: ['Tap rapidly for more flips', 'Heads give 2x coins', 'Build streaks for bonuses'],
-  },
-  statsPanel: {
-    title: 'Game Stats',
-    description: 'Track your progress here. Your coins, streak count, and betting options are all displayed.',
-    tips: ['Current coin balance', 'Active heads streak', 'Betting controls'],
-  },
-  shopButton: {
-    title: 'Shop & Upgrades',
-    description: 'Buy upgrades to improve your coin generation and unlock powerful generators.',
-    tips: ['Tap multiplier upgrades', 'Passive generators', 'Prestige upgrades'],
-  },
-  achievementsButton: {
-    title: 'Achievements',
-    description: 'Complete achievements to earn permanent multipliers and bonus coins.',
-    tips: ['Track your progress', 'Earn multipliers', 'Get bonus rewards'],
-  },
-  prestigeButton: {
-    title: 'Prestige System',
-    description: 'Reset your progress for prestige points and massive permanent multipliers.',
-    tips: ['Reset for points', 'Huge multipliers', 'Long-term progression'],
-  },
-  settingsButton: {
-    title: 'Game Settings',
-    description: 'Customize your game experience with sound, accessibility, and account options.',
-    tips: ['Sound controls', 'Accessibility options', 'Account management'],
-  },
-};
-
 const TooltipSystem = () => {
   const [activeTooltip, setActiveTooltip] = useState(null);
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const scaleAnim = useRef(new Animated.Value(0.8)).current;
+  const { t } = useLanguage();
 
   const showTooltip = (tooltipId, targetRef) => {
-    if (!TOOLTIP_CONTENT[tooltipId] || !targetRef?.current) return;
+    if (!t(`tooltips.${tooltipId}`) || !targetRef?.current) return;
 
     // Measure target element position
     targetRef.current.measure((x, y, width, height, pageX, pageY) => {
@@ -137,7 +106,11 @@ const TooltipSystem = () => {
 
   if (!activeTooltip) return null;
 
-  const content = TOOLTIP_CONTENT[activeTooltip];
+  const content = {
+    title: t(`tooltips.${activeTooltip}.title`),
+    description: t(`tooltips.${activeTooltip}.description`),
+    tips: t(`tooltips.${activeTooltip}.tips`)
+  };
   const tooltipStyle = getTooltipStyle();
 
   return (
@@ -175,7 +148,7 @@ const TooltipSystem = () => {
 
           {/* Tips */}
           <View style={styles.tipsContainer}>
-            <Text style={styles.tipsTitle}>Quick Tips:</Text>
+            <Text style={styles.tipsTitle}>Consejos Rápidos:</Text>
             {content.tips.map((tip, index) => (
               <View key={index} style={styles.tipItem}>
                 <Text style={styles.tipBullet}>•</Text>

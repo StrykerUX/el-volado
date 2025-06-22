@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import hapticFeedback from '../utils/HapticFeedback';
+import { useLanguage } from '../contexts/LanguageContext';
 import { 
   COLORS, 
   SHADOWS, 
@@ -21,61 +22,64 @@ import {
 
 const { width, height } = Dimensions.get('window');
 
-const TUTORIAL_STEPS = [
-  {
-    id: 'welcome',
-    title: 'Welcome to the Game!',
-    description: 'Let me show you around. This quick tour will teach you everything you need to know!',
-    position: { x: width / 2, y: height / 2 },
-    showHighlight: false,
-  },
-  {
-    id: 'coin_flip',
-    title: 'Flip the Coin',
-    description: 'Tap the coin to flip it! You get double coins for heads and can build streaks for bonuses.',
-    targetElement: 'coinFlip',
-    position: { x: width / 2, y: height * 0.4 },
-    showHighlight: true,
-  },
-  {
-    id: 'stats_panel',
-    title: 'Track Your Progress',
-    description: 'Here you can see your coins, streak, and flip stats. You can also place bets for bigger rewards!',
-    targetElement: 'statsPanel',
-    position: { x: width / 2, y: height * 0.6 },
-    showHighlight: true,
-  },
-  {
-    id: 'shop_button',
-    title: 'Upgrade Your Game',
-    description: 'Use the Shop to buy upgrades and generators. Make each flip more profitable!',
+const TutorialOverlay = ({ visible, onComplete, targetElements = {} }) => {
+  const [currentStep, setCurrentStep] = useState(0);
+  const [isVisible, setIsVisible] = useState(visible);
+  const pulseAnim = useRef(new Animated.Value(1)).current;
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const { t } = useLanguage();
+
+  const TUTORIAL_STEPS = [
+    {
+      id: 'welcome',
+      title: t('tutorial.steps.welcome.title'),
+      description: t('tutorial.steps.welcome.description'),
+      position: { x: width / 2, y: height / 2 },
+      showHighlight: false,
+    },
+    {
+      id: 'coin_flip',
+      title: t('tutorial.steps.coinFlip.title'),
+      description: t('tutorial.steps.coinFlip.description'),
+      targetElement: 'coinFlip',
+      position: { x: width / 2, y: height * 0.4 },
+      showHighlight: true,
+    },
+    {
+      id: 'stats_panel',
+      title: t('tutorial.steps.statsPanel.title'),
+      description: t('tutorial.steps.statsPanel.description'),
+      targetElement: 'statsPanel',
+      position: { x: width / 2, y: height * 0.6 },
+      showHighlight: true,
+    },
+    {
+      id: 'shop_button',
+      title: t('tutorial.steps.shopButton.title'),
+    description: t('tutorial.steps.shopButton.description'),
     targetElement: 'shopButton',
     position: { x: width - 100, y: height - 150 },
     showHighlight: true,
   },
   {
     id: 'achievements',
-    title: 'Earn Achievements',
-    description: 'Complete achievements to earn permanent multipliers. Check your progress here!',
+    title: t('tutorial.steps.achievementsButton.title'),
+    description: t('tutorial.steps.achievementsButton.description'),
     targetElement: 'achievementsButton',
     position: { x: 100, y: height - 150 },
     showHighlight: true,
   },
-  {
-    id: 'ready',
-    title: "You're All Set!",
-    description: 'Now you know the basics. Start flipping coins and have fun! Tap the help button anytime for assistance.',
-    position: { x: width / 2, y: height / 2 },
-    showHighlight: false,
-  },
-];
+    {
+      id: 'ready',
+      title: '¡Ya estás listo!',
+      description: 'Ahora conoces lo básico. ¡Empieza a lanzar monedas y diviértete! Toca el botón de ayuda en cualquier momento para asistencia.',
+      position: { x: width / 2, y: height / 2 },
+      showHighlight: false,
+    },
+  ];
 
-const TutorialOverlay = ({ isVisible, onComplete, elementRefs = {} }) => {
-  const [currentStep, setCurrentStep] = useState(0);
   const [elementPositions, setElementPositions] = useState({});
-  const fadeAnim = useRef(new Animated.Value(0)).current;
   const scaleAnim = useRef(new Animated.Value(0.8)).current;
-  const pulseAnim = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
     if (isVisible) {
@@ -279,7 +283,7 @@ const TutorialOverlay = ({ isVisible, onComplete, elementRefs = {} }) => {
           {/* Step indicator */}
           <View style={styles.stepIndicator}>
             <Text style={styles.stepText}>
-              {currentStep + 1} of {TUTORIAL_STEPS.length}
+              {currentStep + 1} de {TUTORIAL_STEPS.length}
             </Text>
           </View>
 
@@ -290,12 +294,12 @@ const TutorialOverlay = ({ isVisible, onComplete, elementRefs = {} }) => {
           {/* Actions */}
           <View style={styles.actions}>
             <TouchableOpacity onPress={handleSkip} style={styles.skipButton}>
-              <Text style={styles.skipButtonText}>Skip Tour</Text>
+              <Text style={styles.skipButtonText}>{t('tutorial.skip')}</Text>
             </TouchableOpacity>
             
             <TouchableOpacity onPress={handleNext} style={styles.nextButton}>
               <Text style={styles.nextButtonText}>
-                {currentStep === TUTORIAL_STEPS.length - 1 ? 'Get Started!' : 'Next'}
+                {currentStep === TUTORIAL_STEPS.length - 1 ? '¡Empezar!' : t('onboarding.next')}
               </Text>
             </TouchableOpacity>
           </View>

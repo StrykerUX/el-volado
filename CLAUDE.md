@@ -139,23 +139,89 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
    - HapticFeedback.js: Vibración con patrones específicos del juego
    - Integración completa en GameStore y GameScreen
 
-### 📋 PLANNED - Phase 5: Mobile App Integration (NEXT)
-1. **Frontend Integration** (Ready to Start)
+### ✅ COMPLETED - Phase 5: Authentication & Onboarding
+1. **Authentication System** ✅ COMPLETED
+   - Neo-brutalist AuthScreen with login/register toggle
+   - Form validation and error handling
+   - Mock authentication for MVP testing
+   - Smooth post-authentication navigation
+   - Cross-platform compatibility (web/mobile)
+
+2. **Onboarding System** ✅ COMPLETED
+   - Interactive 4-step tutorial explaining game mechanics
+   - Step-by-step navigation with animations
+   - Skip system for experienced users
+   - Integration with authentication flow
+   - Responsive design for web and mobile
+
+3. **Guided Tour System** ✅ COMPLETED
+   - TutorialOverlay with specific element targeting
+   - Contextual tooltip system with long-press triggers
+   - Omnipresent help button with tutorial restart
+   - Feature highlighting with pulse animations
+   - Persistent tutorial state management
+
+4. **Navigation System** ✅ COMPLETED
+   - AppNavigator.js for route management
+   - Complete auth → onboarding → game flow
+   - Authentication state handling
+   - Deep linking preparation
+
+### 🔄 CURRENT - Phase 6: Backend Integration (IN PROGRESS on development branch)
+
+**Status**: Active development on `development` branch  
+**Target**: Stable MVP with real backend integration
+
+1. **Frontend-Backend Integration** (Current Focus)
+   - Switch from Mock to Real PostgreSQL authentication
    - Integrate SyncService into React Native GameScreen
-   - Implement authentication flow in mobile app
-   - Add sync indicators and offline status UI
+   - Implement sync indicators and offline status UI
    - Test sync with PostgreSQL backend
 
-2. **Future Social Features**
+2. **Production Readiness**
+   - Environment configuration for development/production
+   - Robust error handling for network issues
+   - Performance optimization for sync operations
+   - User notification system for sync status
+
+3. **Future Social Features** (Post Phase 6)
    - Global leaderboards with PostgreSQL
    - Weekly tournaments
    - Friend referral system
    - Social achievements
 
+## Development Workflow
+
+### Branch Strategy
+- **main**: Stable production-ready code
+- **development**: Active development branch for Phase 6 (Backend Integration)
+- **feature/***: Individual feature branches (merge to development)
+
+### Git Workflow
+```bash
+# Switch to development branch (current active branch)
+git checkout development
+
+# Create feature branch for specific changes
+git checkout -b feature/backend-integration
+git checkout -b feature/sync-improvements
+
+# Commit changes to development
+git add .
+git commit -m "Description"
+
+# Merge to main only when development is stable
+git checkout main
+git merge development
+```
+
 ## Common Commands
 
 ### Frontend (Mobile)
 ```bash
+# Navigate to mobile directory
+cd mobile
+
 # Install dependencies
 npm install
 
@@ -379,13 +445,13 @@ COLORS = {
 
 ## Future Considerations
 
-### Phase 5 Priorities (Current Focus)
-1. **Tutorial System**: Interactive onboarding for new users
-2. **Advanced Visual Effects**: Daily bonus animations, achievement notifications
-3. **Performance Testing**: Load testing and optimization
-4. **Beta Preparation**: Bug fixes and polish for release
+### Phase 6 Priorities (Current Focus)
+1. **Backend Integration**: Switch from mock to real PostgreSQL authentication
+2. **Sync System**: Complete frontend-backend data synchronization
+3. **Production Testing**: End-to-end testing with real backend
+4. **Performance Optimization**: Fine-tuning for production deployment
 
-### Phase 6 Expansion  
+### Phase 7 Expansion  
 1. **Social Features**: Global leaderboards and tournaments
 2. **Platform Expansion**: iOS/Android app store releases
 3. **Analytics Integration**: Player behavior tracking
@@ -596,9 +662,33 @@ if (Platform.OS === 'web') {
 - Social features preparation
 
 ### 🚀 Estado de Desarrollo Actual
-**Frontend**: 95% completo - Core gameplay + UX/UI optimization finalizado  
-**Backend**: 90% completo - API infrastructure lista para producción  
-**Testing**: Ready for QA - Todas las funcionalidades principales implementadas  
-**Deployment**: Ready for beta testing - App funcional en web y móvil
+**Frontend**: 99% completo - Core gameplay + Authentication + Onboarding finalizado  
+**Backend**: 95% completo - API infrastructure lista para producción  
+**Authentication**: 100% completo - Flujo completo auth → onboarding → game  
+**Testing**: Ready for integration - MVP totalmente funcional  
+**Deployment**: Ready for backend integration - Listo para producción
+
+## 📈 Development Status & Branch Strategy
+
+### **🎯 Current Phase:** Backend Integration (IN PROGRESS on development branch)
+### **📊 Progress:** Frontend 99% | Backend 95% | Authentication 100% | Integration 70%
+
+### **Branch Strategy (Updated January 2025)**
+- **main**: Stable production-ready MVP (Phase 5 completed)
+- **development**: Active development for Phase 6 (Backend Integration) ← CURRENT
+- **feature/***: Individual feature branches (merge to development)
+
+### **Current Work (development branch):**
+1. **Switch a Real Backend:** Cambiar de mock a PostgreSQL authentication
+2. **Sync Service Integration:** Conectar GameScreen con backend API  
+3. **Production Testing:** Testing completo del flujo end-to-end
+4. **Performance Optimization:** Fine-tuning para mejores métricas
+5. **Merge to main:** Cuando development esté estable y tested
+
+### **Development Workflow:**
+- All Phase 6 changes happen on `development` branch
+- Testing and iteration until stable MVP with backend
+- Merge to `main` when Phase 6 is complete and production-ready
+- `main` always contains the latest stable version
 
 This document should be updated as the project evolves to maintain context for future development sessions.

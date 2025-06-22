@@ -9,6 +9,7 @@ import {
   Dimensions,
 } from 'react-native';
 import hapticFeedback from '../utils/HapticFeedback';
+import { useLanguage } from '../contexts/LanguageContext';
 import { 
   COLORS, 
   SHADOWS, 
@@ -21,39 +22,40 @@ import {
 
 const { width } = Dimensions.get('window');
 
-const ONBOARDING_STEPS = [
-  {
-    id: 1,
-    title: '🎮 Welcome to Volado!',
-    subtitle: 'The Fair Coin Flip Game',
-    description: 'Experience the thrill of coin flipping with guaranteed 50/50 odds. No tricks, no pay-to-win, just pure skill and strategy!',
-    highlight: 'fair_play',
-  },
-  {
-    id: 2,
-    title: '🪙 Flip Coins, Earn Rewards',
-    subtitle: 'Simple Yet Addictive',
-    description: 'Tap the coin to flip it! Get heads for double coins, build streaks for massive bonuses, and bet strategically to multiply your winnings.',
-    highlight: 'coin_flip',
-  },
-  {
-    id: 3,
-    title: '⚡ Upgrade & Progress',
-    subtitle: 'Get Stronger Over Time',
-    description: 'Buy upgrades to earn more coins per flip, unlock generators for passive income, and achieve milestones for permanent multipliers.',
-    highlight: 'progression',
-  },
-  {
-    id: 4,
-    title: '🏆 Prestige & Compete',
-    subtitle: 'Endless Gameplay',
-    description: 'Reset your progress for prestige points and massive multipliers. Compete with players worldwide on fair leaderboards!',
-    highlight: 'prestige',
-  },
-];
-
 const OnboardingScreen = ({ onComplete, onSkip }) => {
   const [currentStep, setCurrentStep] = useState(0);
+  const { t } = useLanguage();
+
+  const ONBOARDING_STEPS = [
+    {
+      id: 1,
+      title: t('onboarding.step1.title'),
+      subtitle: 'El Juego de Lanzar Monedas Justo',
+      description: t('onboarding.step1.description'),
+      highlight: 'fair_play',
+    },
+    {
+      id: 2,
+      title: '🪙 Lanza Monedas, Gana Recompensas',
+      subtitle: 'Simple pero Adictivo',
+      description: t('onboarding.step2.description'),
+      highlight: 'coin_flip',
+    },
+    {
+      id: 3,
+      title: '⚡ Mejora y Progresa',
+      subtitle: 'Hazte Más Fuerte con el Tiempo',
+      description: t('onboarding.step3.description'),
+      highlight: 'progression',
+    },
+    {
+      id: 4,
+      title: '🏆 Prestigio y Competencia',
+      subtitle: 'Juego Sin Fin',
+      description: t('onboarding.step4.description'),
+      highlight: 'prestige',
+    },
+  ];
 
   React.useEffect(() => {
     // OnboardingScreen initialized
@@ -130,9 +132,9 @@ const OnboardingScreen = ({ onComplete, onSkip }) => {
             {step.highlight === 'fair_play' && (
               <View style={styles.highlightCard}>
                 <Text style={styles.highlightText}>
-                  ✓ Guaranteed 50/50 odds{'\n'}
-                  ✓ No pay-to-win mechanics{'\n'}
-                  ✓ Fair anti-cheat system
+                  ✓ Probabilidades garantizadas 50/50{'\n'}
+                  ✓ Sin mecánicas pay-to-win{'\n'}
+                  ✓ Sistema anti-trampa justo
                 </Text>
               </View>
             )}
@@ -140,9 +142,9 @@ const OnboardingScreen = ({ onComplete, onSkip }) => {
             {step.highlight === 'coin_flip' && (
               <View style={styles.highlightCard}>
                 <Text style={styles.highlightText}>
-                  🪙 Tap to flip coins{'\n'}
-                  🔥 Build streaks for bonuses{'\n'}
-                  💰 Strategic betting system
+                  🪙 Toca para lanzar monedas{'\n'}
+                  🔥 Construye rachas para bonos{'\n'}
+                  💰 Sistema de apuestas estratégico
                 </Text>
               </View>
             )}
@@ -150,9 +152,9 @@ const OnboardingScreen = ({ onComplete, onSkip }) => {
             {step.highlight === 'progression' && (
               <View style={styles.highlightCard}>
                 <Text style={styles.highlightText}>
-                  ⚡ Upgrade multipliers{'\n'}
-                  🏭 Passive generators{'\n'}
-                  🏆 Achievement rewards
+                  ⚡ Mejora multiplicadores{'\n'}
+                  🏭 Generadores pasivos{'\n'}
+                  🏆 Recompensas de logros
                 </Text>
               </View>
             )}
@@ -160,9 +162,9 @@ const OnboardingScreen = ({ onComplete, onSkip }) => {
             {step.highlight === 'prestige' && (
               <View style={styles.highlightCard}>
                 <Text style={styles.highlightText}>
-                  🌟 Prestige for multipliers{'\n'}
-                  🏅 Global leaderboards{'\n'}
-                  ♾️ Endless progression
+                  🌟 Prestigio para multiplicadores{'\n'}
+                  🏅 Tablas globales de clasificación{'\n'}
+                  ♾️ Progreso sin fin
                 </Text>
               </View>
             )}
@@ -178,9 +180,9 @@ const OnboardingScreen = ({ onComplete, onSkip }) => {
       
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Getting Started</Text>
+        <Text style={styles.headerTitle}>Empezar</Text>
         <TouchableOpacity onPress={handleSkip} style={styles.skipButton}>
-          <Text style={styles.skipButtonText}>Skip</Text>
+          <Text style={styles.skipButtonText}>{t('onboarding.skip')}</Text>
         </TouchableOpacity>
       </View>
 
@@ -218,12 +220,12 @@ const OnboardingScreen = ({ onComplete, onSkip }) => {
             styles.navButtonText,
             currentStep === 0 && styles.navButtonTextDisabled,
           ]}>
-            Previous
+            {t('common.previous')}
           </Text>
         </TouchableOpacity>
 
         <Text style={styles.stepCounter}>
-          {currentStep + 1} of {ONBOARDING_STEPS.length}
+          {currentStep + 1} de {ONBOARDING_STEPS.length}
         </Text>
 
         <TouchableOpacity
@@ -231,7 +233,7 @@ const OnboardingScreen = ({ onComplete, onSkip }) => {
           onPress={handleNext}
         >
           <Text style={styles.navButtonText}>
-            {currentStep === ONBOARDING_STEPS.length - 1 ? "Let's Play!" : 'Next'}
+            {currentStep === ONBOARDING_STEPS.length - 1 ? t('onboarding.start') : t('onboarding.next')}
           </Text>
         </TouchableOpacity>
       </View>

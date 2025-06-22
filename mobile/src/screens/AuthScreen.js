@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import useGameStore from '../stores/GameStore';
 import hapticFeedback from '../utils/HapticFeedback';
+import { useLanguage } from '../contexts/LanguageContext';
 import { 
   COLORS, 
   SHADOWS, 
@@ -33,24 +34,25 @@ const AuthScreen = ({ onAuthSuccess }) => {
   const [errors, setErrors] = useState({});
   
   const { loginUser, registerUser } = useGameStore();
+  const { t, language, changeLanguage } = useLanguage();
 
   const validateForm = () => {
     const newErrors = {};
     
     if (!isLogin && !formData.username.trim()) {
-      newErrors.username = 'Username is required';
+      newErrors.username = t('auth.username') + ' es requerido';
     }
     
     if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
+      newErrors.email = t('auth.email') + ' es requerido';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Email is invalid';
+      newErrors.email = t('auth.email') + ' no válido';
     }
     
     if (!formData.password.trim()) {
-      newErrors.password = 'Password is required';
+      newErrors.password = t('auth.password') + ' es requerida';
     } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
+      newErrors.password = t('auth.password') + ' debe tener al menos 6 caracteres';
     }
 
     setErrors(newErrors);
@@ -90,17 +92,17 @@ const AuthScreen = ({ onAuthSuccess }) => {
         console.log('Authentication failed:', result.error);
         hapticFeedback.vibrate('error');
         Alert.alert(
-          'Error',
-          result.error || 'Something went wrong. Please try again.',
-          [{ text: 'OK' }]
+          t('common.error'),
+          result.error || 'Algo salió mal. Inténtalo de nuevo.',
+          [{ text: t('common.ok') }]
         );
       }
     } catch (error) {
       hapticFeedback.vibrate('error');
       Alert.alert(
-        'Error',
-        'Network error. Please check your connection and try again.',
-        [{ text: 'OK' }]
+        t('common.error'),
+        'Error de red. Verifica tu conexión e inténtalo de nuevo.',
+        [{ text: t('common.ok') }]
       );
     } finally {
       setIsLoading(false);
@@ -127,33 +129,65 @@ const AuthScreen = ({ onAuthSuccess }) => {
       <StatusBar barStyle="dark-content" backgroundColor={COLORS.background} />
       
       <View style={styles.content}>
+        {/* Language Selector */}
+        <View style={styles.languageSelector}>
+          <TouchableOpacity
+            style={[
+              styles.languageButton,
+              language === 'es' && styles.languageButtonActive
+            ]}
+            onPress={() => changeLanguage('es')}
+          >
+            <Text style={[
+              styles.languageText,
+              language === 'es' && styles.languageTextActive
+            ]}>
+              ES
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.languageButton,
+              language === 'en' && styles.languageButtonActive
+            ]}
+            onPress={() => changeLanguage('en')}
+          >
+            <Text style={[
+              styles.languageText,
+              language === 'en' && styles.languageTextActive
+            ]}>
+              EN
+            </Text>
+          </TouchableOpacity>
+        </View>
+
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.logo}>🎮 VOLADO</Text>
           <Text style={styles.tagline}>
-            Fair 50/50 Coin Flip Game
+            {t('auth.subtitle')}
           </Text>
           <Text style={styles.subtitle}>
-            No Pay-to-Win • Pure Skill • Real Fun
+            Sin Pay-to-Win • Habilidad Pura • Diversión Real
           </Text>
         </View>
 
         {/* Auth Form */}
         <View style={styles.formContainer}>
           <Text style={styles.formTitle}>
-            {isLogin ? 'Welcome Back!' : 'Join Volado!'}
+            {isLogin ? t('auth.welcome') : t('auth.welcome')}
           </Text>
 
           {/* Username field (only for register) */}
           {!isLogin && (
             <View style={styles.inputContainer}>
-              <Text style={styles.inputLabel}>Username</Text>
+              <Text style={styles.inputLabel}>{t('auth.username')}</Text>
               <TextInput
                 style={[
                   styles.input,
                   errors.username && styles.inputError
                 ]}
-                placeholder="Choose a username"
+                placeholder="Elige un nombre de usuario"
                 placeholderTextColor={COLORS.textSecondary}
                 value={formData.username}
                 onChangeText={(value) => updateFormData('username', value)}
@@ -168,13 +202,13 @@ const AuthScreen = ({ onAuthSuccess }) => {
 
           {/* Email field */}
           <View style={styles.inputContainer}>
-            <Text style={styles.inputLabel}>Email</Text>
+            <Text style={styles.inputLabel}>{t('auth.email')}</Text>
             <TextInput
               style={[
                 styles.input,
                 errors.email && styles.inputError
               ]}
-              placeholder="your@email.com"
+              placeholder="tu@email.com"
               placeholderTextColor={COLORS.textSecondary}
               value={formData.email}
               onChangeText={(value) => updateFormData('email', value)}
@@ -189,13 +223,13 @@ const AuthScreen = ({ onAuthSuccess }) => {
 
           {/* Password field */}
           <View style={styles.inputContainer}>
-            <Text style={styles.inputLabel}>Password</Text>
+            <Text style={styles.inputLabel}>{t('auth.password')}</Text>
             <TextInput
               style={[
                 styles.input,
                 errors.password && styles.inputError
               ]}
-              placeholder="Enter password"
+              placeholder="Ingresa tu contraseña"
               placeholderTextColor={COLORS.textSecondary}
               value={formData.password}
               onChangeText={(value) => updateFormData('password', value)}
@@ -222,7 +256,7 @@ const AuthScreen = ({ onAuthSuccess }) => {
               <ActivityIndicator color={COLORS.background} size="small" />
             ) : (
               <Text style={styles.submitButtonText}>
-                {isLogin ? 'Login' : 'Create Account'}
+                {isLogin ? t('auth.loginButton') : t('auth.registerButton')}
               </Text>
             )}
           </TouchableOpacity>
@@ -230,11 +264,11 @@ const AuthScreen = ({ onAuthSuccess }) => {
           {/* Toggle Mode */}
           <View style={styles.toggleContainer}>
             <Text style={styles.toggleText}>
-              {isLogin ? "Don't have an account?" : "Already have an account?"}
+              {isLogin ? t('auth.noAccount') : t('auth.hasAccount')}
             </Text>
             <TouchableOpacity onPress={toggleMode}>
               <Text style={styles.toggleLink}>
-                {isLogin ? ' Sign Up' : ' Login'}
+                {isLogin ? ' ' + t('auth.switchToRegister') : ' ' + t('auth.switchToLogin')}
               </Text>
             </TouchableOpacity>
           </View>
@@ -243,7 +277,7 @@ const AuthScreen = ({ onAuthSuccess }) => {
         {/* Footer */}
         <View style={styles.footer}>
           <Text style={styles.footerText}>
-            By continuing, you agree to our fair play policy
+            Al continuar, aceptas nuestra política de juego justo
           </Text>
         </View>
       </View>
@@ -374,6 +408,35 @@ const styles = StyleSheet.create({
     fontFamily: FONTS.regular,
     color: COLORS.textSecondary,
     textAlign: 'center',
+  },
+  languageSelector: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: SPACING.lg,
+    gap: SPACING.sm,
+  },
+  languageButton: {
+    backgroundColor: COLORS.surface,
+    borderRadius: BORDER_RADIUS.md,
+    paddingHorizontal: SPACING.md,
+    paddingVertical: SPACING.sm,
+    ...BORDERS.medium,
+    borderColor: COLORS.border,
+    minWidth: 50,
+    alignItems: 'center',
+  },
+  languageButtonActive: {
+    backgroundColor: COLORS.primary,
+    borderColor: COLORS.primaryDark,
+    ...SHADOWS.small,
+  },
+  languageText: {
+    fontSize: 14,
+    fontFamily: FONTS.bold,
+    color: COLORS.text,
+  },
+  languageTextActive: {
+    color: COLORS.background,
   },
 });
 

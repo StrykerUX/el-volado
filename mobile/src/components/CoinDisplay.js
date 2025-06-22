@@ -2,10 +2,12 @@ import React, { useRef, useEffect } from 'react';
 import { View, Text, StyleSheet, Animated } from 'react-native';
 import useGameStore from '../stores/GameStore';
 import { formatNumber } from '../utils/NumberFormatter';
+import { useLanguage } from '../contexts/LanguageContext';
 import { COLORS, SHADOWS, BORDER_RADIUS, BORDERS, SPACING, TYPOGRAPHY } from '../constants/NeoBrutalTheme';
 
 const CoinDisplay = () => {
   const { coins, coinsPerSecond } = useGameStore();
+  const { t } = useLanguage();
   const scaleValue = useRef(new Animated.Value(1)).current;
   const glowValue = useRef(new Animated.Value(0)).current;
   const prevCoins = useRef(coins);
@@ -72,7 +74,7 @@ const CoinDisplay = () => {
         glowStyle,
         { transform: [{ scale: scaleValue }] }
       ]}>
-        <Text style={styles.coinsLabel}>💰 COINS</Text>
+        <Text style={styles.coinsLabel}>💰 {t('game.coins').toUpperCase()}</Text>
         <Text style={styles.coinsValue}>
           {formatNumber(coins)}
         </Text>
@@ -81,7 +83,7 @@ const CoinDisplay = () => {
       {coinsPerSecond > 0 && (
         <View style={styles.cpsContainer}>
           <Text style={styles.cpsText}>
-            ⚡ {formatNumber(coinsPerSecond)}/sec
+            ⚡ {formatNumber(coinsPerSecond)}/seg
           </Text>
         </View>
       )}
