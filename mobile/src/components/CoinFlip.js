@@ -51,7 +51,8 @@ const CoinFlip = () => {
   });
   
   const handleCoinFlip = () => {
-    console.log('CoinFlip clicked - isFlipping:', isFlipping);
+    const gameState = useGameStore.getState();
+    console.log('CoinFlip clicked - isFlipping:', isFlipping, 'showTutorial:', gameState.showTutorial);
     if (isFlipping) {
       console.log('Flip blocked - already flipping');
       return;
@@ -67,6 +68,7 @@ const CoinFlip = () => {
   };
   
   const startFlipAnimation = () => {
+    console.log('startFlipAnimation called');
     // Reset values
     rotationY.value = 0;
     translateY.value = 0;
@@ -107,13 +109,16 @@ const CoinFlip = () => {
     );
     
     // Call the game store flip function
+    console.log('Calling flipCoin() from GameStore...');
     flipCoin();
   };
   
   const completeCoinFlip = () => {
+    console.log('completeCoinFlip called');
     // Get the result from the store after animation completes
     const result = useGameStore.getState().lastFlipResult;
     const gameState = useGameStore.getState();
+    console.log('Flip result:', result, 'isFlipping:', gameState.isFlipping);
     setLastResult(result);
     
     // Haptic feedback based on result
@@ -188,6 +193,8 @@ const CoinFlip = () => {
         accessibilityHint={bettingMode && currentBet > 0 ? `Betting ${currentBet} coins. Tap to flip` : 'Tap to flip the coin and earn coins'}
         accessibilityRole="button"
         accessibilityState={{ disabled: isFlipping }}
+        onPressIn={() => console.log('TouchableOpacity onPressIn detected')}
+        onPressOut={() => console.log('TouchableOpacity onPressOut detected')}
       >
         <Animated.View style={[styles.coinWrapper, coinAnimatedStyle]}>
           {/* Neo-brutal coin design */}

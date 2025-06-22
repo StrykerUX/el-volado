@@ -78,12 +78,12 @@ const GameScreen = ({ onLogout }) => {
       // Initialize onboarding state
       await initializeOnboardingState();
       
-      // Start tutorial if not completed
-      if (!hasCompletedTutorial) {
-        setTimeout(() => {
-          startTutorial();
-        }, 1500); // Delay to allow UI to settle
-      }
+      // Start tutorial if not completed (temporarily disabled for debugging)
+      // if (!hasCompletedTutorial) {
+      //   setTimeout(() => {
+      //     startTutorial();
+      //   }, 1500); // Delay to allow UI to settle
+      // }
     };
     
     initializeGame();

@@ -6,7 +6,6 @@ import {
   StyleSheet,
   SafeAreaView,
   StatusBar,
-  Animated,
   Dimensions,
   ScrollView,
 } from 'react-native';
@@ -57,23 +56,9 @@ const ONBOARDING_STEPS = [
 const OnboardingScreen = ({ onComplete, onSkip }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const scrollViewRef = useRef(null);
-  const slideAnim = useRef(new Animated.Value(0)).current;
-  const fadeAnim = useRef(new Animated.Value(0)).current;
 
   React.useEffect(() => {
-    // Initial animations
-    Animated.parallel([
-      Animated.timing(slideAnim, {
-        toValue: 1,
-        duration: 600,
-        useNativeDriver: true,
-      }),
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 800,
-        useNativeDriver: true,
-      }),
-    ]).start();
+    // OnboardingScreen initialized
   }, []);
 
   const handleNext = () => {
@@ -123,13 +108,13 @@ const OnboardingScreen = ({ onComplete, onSkip }) => {
     
     return (
       <View key={step.id} style={styles.stepContainer}>
-        <Animated.View 
+        <View 
           style={[
             styles.stepContent,
             {
-              opacity: isActive ? fadeAnim : 0.3,
+              opacity: isActive ? 1 : 0.3,
               transform: [{
-                scale: isActive ? slideAnim : 0.9,
+                scale: isActive ? 1 : 0.9,
               }],
             }
           ]}
@@ -196,7 +181,7 @@ const OnboardingScreen = ({ onComplete, onSkip }) => {
               </View>
             )}
           </View>
-        </Animated.View>
+        </View>
       </View>
     );
   };
