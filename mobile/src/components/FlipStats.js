@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import useGameStore from '../stores/GameStore';
 import { formatNumber } from '../utils/NumberFormatter';
 import { COLORS, SHADOWS, BORDER_RADIUS, BORDERS, SPACING, TYPOGRAPHY } from '../constants/NeoBrutalTheme';
-import HapticFeedback from '../utils/HapticFeedback';
+import hapticFeedback from '../utils/HapticFeedback';
 
 const FlipStats = () => {
   const { 
@@ -26,7 +26,7 @@ const FlipStats = () => {
   const handleBetSelection = (percentage) => {
     const betAmount = Math.floor(coins * percentage.value);
     if (betAmount > 0) {
-      HapticFeedback.buttonPress();
+      hapticFeedback.buttonPress();
       setBetAmount(betAmount);
     }
   };

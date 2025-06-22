@@ -69,20 +69,25 @@ const AuthScreen = ({ onAuthSuccess }) => {
     try {
       let result;
       
+      console.log('Starting authentication process...', { isLogin, formData });
+      
       if (isLogin) {
         result = await loginUser(formData.email, formData.password);
       } else {
         result = await registerUser(formData.username, formData.email, formData.password);
       }
 
+      console.log('Authentication result:', result);
+
       if (result.success) {
+        console.log('Authentication successful, navigating directly...');
         hapticFeedback.vibrate('success');
-        Alert.alert(
-          'Success!',
-          isLogin ? 'Welcome back to Volado!' : 'Account created successfully!',
-          [{ text: 'Continue', onPress: onAuthSuccess }]
-        );
+        
+        // Navigate directly instead of using Alert (web compatibility)
+        console.log('Calling onAuthSuccess directly...');
+        onAuthSuccess();
       } else {
+        console.log('Authentication failed:', result.error);
         hapticFeedback.vibrate('error');
         Alert.alert(
           'Error',

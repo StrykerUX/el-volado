@@ -12,7 +12,7 @@ import Animated, {
 import useGameStore from '../stores/GameStore';
 import { COLORS, SHADOWS, BORDER_RADIUS, BORDERS, SPACING, TYPOGRAPHY } from '../constants/NeoBrutalTheme';
 import FeedbackSystem from '../utils/FeedbackSystem';
-import HapticFeedback from '../utils/HapticFeedback';
+import hapticFeedback from '../utils/HapticFeedback';
 
 const { width, height } = Dimensions.get('window');
 
@@ -51,10 +51,16 @@ const CoinFlip = () => {
   });
   
   const handleCoinFlip = () => {
-    if (isFlipping) return;
+    console.log('CoinFlip clicked - isFlipping:', isFlipping);
+    if (isFlipping) {
+      console.log('Flip blocked - already flipping');
+      return;
+    }
+    
+    console.log('Starting coin flip...');
     
     // Haptic feedback on tap
-    HapticFeedback.tap();
+    hapticFeedback.tap();
     
     // Start the flip animation
     startFlipAnimation();
@@ -116,7 +122,7 @@ const CoinFlip = () => {
         Math.floor(currentBet * 1.8) : 
         gameState.coinsPerTap * 2;
       
-      HapticFeedback.coinWin(coinsWon);
+      hapticFeedback.coinWin(coinsWon);
       
       // Screen shake for big wins
       if (coinsWon > 100) {
@@ -131,7 +137,7 @@ const CoinFlip = () => {
         withTiming(1, { duration: 200 })
       );
     } else {
-      HapticFeedback.coinLoss();
+      hapticFeedback.coinLoss();
       
       // Small shake for tails
       scale.value = withSequence(
@@ -142,7 +148,7 @@ const CoinFlip = () => {
     
     // Streak haptic feedback
     if (gameState.headsStreak > 1) {
-      HapticFeedback.streak(gameState.headsStreak);
+      hapticFeedback.streak(gameState.headsStreak);
     }
   };
   
