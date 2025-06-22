@@ -10,7 +10,7 @@ import {
   Dimensions,
   ScrollView,
 } from 'react-native';
-import HapticFeedback from '../utils/HapticFeedback';
+import hapticFeedback from '../utils/HapticFeedback';
 import { 
   COLORS, 
   SHADOWS, 
@@ -77,7 +77,7 @@ const OnboardingScreen = ({ onComplete, onSkip }) => {
   }, []);
 
   const handleNext = () => {
-    HapticFeedback.light();
+    hapticFeedback.vibrate('light');
     
     if (currentStep < ONBOARDING_STEPS.length - 1) {
       const nextStep = currentStep + 1;
@@ -94,7 +94,7 @@ const OnboardingScreen = ({ onComplete, onSkip }) => {
   };
 
   const handlePrevious = () => {
-    HapticFeedback.light();
+    hapticFeedback.vibrate('light');
     
     if (currentStep > 0) {
       const prevStep = currentStep - 1;
@@ -109,12 +109,12 @@ const OnboardingScreen = ({ onComplete, onSkip }) => {
   };
 
   const handleComplete = () => {
-    HapticFeedback.success();
+    hapticFeedback.vibrate('success');
     onComplete();
   };
 
   const handleSkip = () => {
-    HapticFeedback.light();
+    hapticFeedback.vibrate('light');
     onSkip();
   };
 

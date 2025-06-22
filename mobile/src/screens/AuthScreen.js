@@ -12,7 +12,7 @@ import {
   Animated,
 } from 'react-native';
 import useGameStore from '../stores/GameStore';
-import HapticFeedback from '../utils/HapticFeedback';
+import hapticFeedback from '../utils/HapticFeedback';
 import { 
   COLORS, 
   SHADOWS, 
@@ -70,12 +70,12 @@ const AuthScreen = ({ onAuthSuccess }) => {
 
   const handleSubmit = async () => {
     if (!validateForm()) {
-      HapticFeedback.error();
+      hapticFeedback.error();
       return;
     }
 
     setIsLoading(true);
-    HapticFeedback.light();
+    hapticFeedback.vibrate('light');
 
     try {
       let result;
@@ -87,14 +87,14 @@ const AuthScreen = ({ onAuthSuccess }) => {
       }
 
       if (result.success) {
-        HapticFeedback.success();
+        hapticFeedback.vibrate('success');
         Alert.alert(
           'Success!',
           isLogin ? 'Welcome back to Volado!' : 'Account created successfully!',
           [{ text: 'Continue', onPress: onAuthSuccess }]
         );
       } else {
-        HapticFeedback.error();
+        hapticFeedback.vibrate('error');
         Alert.alert(
           'Error',
           result.error || 'Something went wrong. Please try again.',
@@ -102,7 +102,7 @@ const AuthScreen = ({ onAuthSuccess }) => {
         );
       }
     } catch (error) {
-      HapticFeedback.error();
+      hapticFeedback.vibrate('error');
       Alert.alert(
         'Error',
         'Network error. Please check your connection and try again.',
@@ -117,7 +117,7 @@ const AuthScreen = ({ onAuthSuccess }) => {
     setIsLogin(!isLogin);
     setFormData({ username: '', email: '', password: '' });
     setErrors({});
-    HapticFeedback.light();
+    hapticFeedback.vibrate('light');
   };
 
   const updateFormData = (field, value) => {

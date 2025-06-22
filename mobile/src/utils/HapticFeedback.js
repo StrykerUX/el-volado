@@ -171,6 +171,36 @@ class HapticFeedback {
   getEnabled() {
     return this.isEnabled;
   }
+
+  // Static methods for convenience
+  static light() {
+    return hapticInstance.vibrate('light');
+  }
+
+  static medium() {
+    return hapticInstance.vibrate('medium');
+  }
+
+  static heavy() {
+    return hapticInstance.vibrate('heavy');
+  }
+
+  static success() {
+    return hapticInstance.vibrate('success');
+  }
+
+  static error() {
+    return hapticInstance.vibrate('error');
+  }
+
+  static warning() {
+    return hapticInstance.vibrate('warning');
+  }
+
+  static selection() {
+    return hapticInstance.vibrate('selection');
+  }
 }
 
-export default new HapticFeedback();
+const hapticInstance = new HapticFeedback();
+export default hapticInstance;

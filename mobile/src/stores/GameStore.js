@@ -1194,9 +1194,33 @@ const useGameStore = create((set, get) => ({
   // Authentication methods
   loginUser: async (emailOrUsername, password) => {
     try {
+      // For development, create a mock success response
+      if (__DEV__) {
+        console.log('Mock login for development:', emailOrUsername);
+        
+        // Mock user data
+        const mockUser = {
+          id: 1,
+          username: 'DemoUser',
+          email: emailOrUsername,
+        };
+        
+        // Set authentication state
+        get().setAuthenticationState(true, mockUser, 'mock-token-123');
+        
+        // Save token to AsyncStorage for persistence
+        await AsyncStorage.setItem('accessToken', 'mock-token-123');
+        
+        return { success: true, user: mockUser, accessToken: 'mock-token-123' };
+      }
+      
+      // Production version
       const result = await syncService.login(emailOrUsername, password);
       
       if (result.success) {
+        get().setAuthenticationState(true, result.user, result.accessToken);
+        await AsyncStorage.setItem('accessToken', result.accessToken);
+        
         // Initialize sync after login
         await get().initializeSync();
         
@@ -1215,9 +1239,33 @@ const useGameStore = create((set, get) => ({
 
   registerUser: async (username, email, password) => {
     try {
+      // For development, create a mock success response
+      if (__DEV__) {
+        console.log('Mock registration for development:', username, email);
+        
+        // Mock user data
+        const mockUser = {
+          id: 1,
+          username: username,
+          email: email,
+        };
+        
+        // Set authentication state
+        get().setAuthenticationState(true, mockUser, 'mock-token-123');
+        
+        // Save token to AsyncStorage for persistence
+        await AsyncStorage.setItem('accessToken', 'mock-token-123');
+        
+        return { success: true, user: mockUser, accessToken: 'mock-token-123' };
+      }
+      
+      // Production version
       const result = await syncService.register(username, email, password);
       
       if (result.success) {
+        get().setAuthenticationState(true, result.user, result.accessToken);
+        await AsyncStorage.setItem('accessToken', result.accessToken);
+        
         // Initialize sync after registration
         await get().initializeSync();
         

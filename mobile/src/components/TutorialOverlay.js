@@ -9,7 +9,7 @@ import {
   Modal,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import HapticFeedback from '../utils/HapticFeedback';
+import hapticFeedback from '../utils/HapticFeedback';
 import { 
   COLORS, 
   SHADOWS, 
@@ -162,7 +162,7 @@ const TutorialOverlay = ({ isVisible, onComplete, elementRefs = {} }) => {
   };
 
   const handleNext = () => {
-    HapticFeedback.light();
+    hapticFeedback.vibrate('light');
     
     if (currentStep < TUTORIAL_STEPS.length - 1) {
       setCurrentStep(currentStep + 1);
@@ -172,12 +172,12 @@ const TutorialOverlay = ({ isVisible, onComplete, elementRefs = {} }) => {
   };
 
   const handleSkip = () => {
-    HapticFeedback.light();
+    hapticFeedback.vibrate('light');
     handleComplete();
   };
 
   const handleComplete = async () => {
-    HapticFeedback.success();
+    hapticFeedback.vibrate('success');
     
     // Mark tutorial as completed
     await AsyncStorage.setItem('tutorialCompleted', 'true');

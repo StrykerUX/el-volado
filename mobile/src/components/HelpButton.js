@@ -10,7 +10,7 @@ import {
   SafeAreaView,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import HapticFeedback from '../utils/HapticFeedback';
+import hapticFeedback from '../utils/HapticFeedback';
 import { 
   COLORS, 
   SHADOWS, 
@@ -116,7 +116,7 @@ const HelpButton = ({ position = 'bottom-right', onTutorialRestart }) => {
   }, []);
 
   const handlePress = () => {
-    HapticFeedback.medium();
+    hapticFeedback.vibrate('medium');
     setIsHelpVisible(true);
     
     // Fade in animation
@@ -128,7 +128,7 @@ const HelpButton = ({ position = 'bottom-right', onTutorialRestart }) => {
   };
 
   const handleClose = () => {
-    HapticFeedback.light();
+    hapticFeedback.vibrate('light');
     
     // Fade out animation
     Animated.timing(fadeAnim, {
@@ -141,12 +141,12 @@ const HelpButton = ({ position = 'bottom-right', onTutorialRestart }) => {
   };
 
   const handleTabPress = (tab) => {
-    HapticFeedback.light();
+    hapticFeedback.vibrate('light');
     setActiveTab(tab);
   };
 
   const handleRestartTutorial = async () => {
-    HapticFeedback.success();
+    hapticFeedback.vibrate('success');
     
     // Clear tutorial completion flag
     await AsyncStorage.removeItem('tutorialCompleted');

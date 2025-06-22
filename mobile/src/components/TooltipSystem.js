@@ -8,7 +8,7 @@ import {
   Dimensions,
   Modal,
 } from 'react-native';
-import HapticFeedback from '../utils/HapticFeedback';
+import hapticFeedback from '../utils/HapticFeedback';
 import { 
   COLORS, 
   SHADOWS, 
@@ -108,7 +108,7 @@ const TooltipSystem = () => {
   };
 
   const handleClose = () => {
-    HapticFeedback.light();
+    hapticFeedback.vibrate('light');
     hideTooltip();
   };
 
@@ -221,7 +221,7 @@ export const withTooltip = (WrappedComponent, tooltipId) => {
     const { showTooltip } = useTooltip();
 
     const handleLongPress = () => {
-      HapticFeedback.medium();
+      hapticFeedback.vibrate('medium');
       showTooltip(tooltipId, elementRef);
     };
 
